@@ -38,8 +38,6 @@ func testAppend(t *testing.T, s *store) {
 	for i := uint64(1); i < 4; i++ {
 		n, pos, err := s.Append(write)
 
-		print("something going wrong?", n, pos, err)
-
 		require.NoError(t, err)
 		require.Equal(t, pos+n, i*width)
 	}
@@ -51,14 +49,10 @@ func testRead(t *testing.T, s *store) {
 
 	for i := uint64(1); i < 4; i++ {
 
-		//print pos
-		//print width
-		print(pos)
-		print(width)
-
 		read, err := s.Read(pos)
 		require.NoError(t, err)
 		require.Equal(t, write, read)
+
 		pos += width
 	}
 }
