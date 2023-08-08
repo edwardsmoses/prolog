@@ -24,11 +24,11 @@ func TestStoreAppendRead(t *testing.T) {
 
 	testAppend(t, s)
 	testRead(t, s)
-	// testReadAt(t, s)
+	testReadAt(t, s)
 
 	s, err = newStore((f))
 	require.NoError(t, err)
-	// testRead(t, s)
+	testRead(t, s)
 
 }
 
@@ -54,5 +54,35 @@ func testRead(t *testing.T, s *store) {
 		require.Equal(t, write, read)
 
 		pos += width
+	}
+}
+
+func testReadAt(t *testing.T, s *store) {
+	t.Helper()
+
+	var off int64
+	off = int64(0)
+
+	for i := uint64(1); i < 4; i++ {
+
+		// read the length of the record
+		b := make([]byte, lenWidth)
+		n, err := s.ReadAt(b, off)
+
+		// check that there're no errors and the number of bytes read is equal to the length of the record
+		require.NoError(t, err)
+		require.Equal(t, lenWidth, n)
+
+		off += int64(n)
+
+		size := enc.Uint64(b)
+		b = make([]byte, size)
+
+		n, err = s.ReadAt(b, off)
+		require.NoError(t, err)
+		require.Equal(t, write, b)
+		require.Equal(t, int(size), n)
+
+		off += int64(n)
 	}
 }
