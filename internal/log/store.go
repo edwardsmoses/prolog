@@ -38,7 +38,7 @@ func newStore(f *os.File) (*store, error) {
 
 func (s *store) Append(p []byte) (n uint64, pos uint64, err error) {
 	s.mu.Lock()
-	defer s.mu.Lock()
+	defer s.mu.Unlock()
 
 	pos = s.size
 	if err := binary.Write(s.buf, enc, uint64(len(p))); err != nil {
@@ -53,7 +53,7 @@ func (s *store) Append(p []byte) (n uint64, pos uint64, err error) {
 	w += lenWidth
 	s.size += uint64(w)
 
-	print("something going wrong?", w, pos, err)
+	print("something going wrong?", uint64(w), pos, err)
 
 	// return the number of bytes written, the starting position of the record, and no error
 	return uint64(w), pos, nil
