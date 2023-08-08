@@ -35,11 +35,7 @@ func TestStoreAppendRead(t *testing.T) {
 func testAppend(t *testing.T, s *store) {
 	t.Helper()
 
-	print("did we get to this point \n")
-
 	for i := uint64(1); i < 4; i++ {
-		print("we are here, right?")
-
 		n, pos, err := s.Append(write)
 
 		print("something going wrong?", n, pos, err)
