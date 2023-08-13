@@ -60,8 +60,7 @@ func testRead(t *testing.T, s *store) {
 func testReadAt(t *testing.T, s *store) {
 	t.Helper()
 
-	var off int64
-	off = int64(0)
+	off := int64(0)
 
 	for i := uint64(1); i < 4; i++ {
 
