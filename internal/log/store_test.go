@@ -85,3 +85,41 @@ func testReadAt(t *testing.T, s *store) {
 		off += int64(n)
 	}
 }
+
+func TestStoreClose(t *testing.T) {
+	f, err := os.CreateTemp("", "store_close_test")
+	require.NoError(t, err)
+
+	defer os.Remove(f.Name())
+
+	s, err := newStore(f)
+	require.NoError(t, err)
+
+	_, _, err = s.Append(write)
+	require.NoError(t, err)
+
+	f, beforeSize, err := openFile(f.Name())
+	require.NoError(t, err)
+
+	err = s.Close()
+	require.NoError(t, err)
+
+	_, afterSize, err := openFile(f.Name())
+	require.NoError(t, err)
+	require.True(t, afterSize > beforeSize)
+}
+
+func openFile(name string) (file *os.File, size int64, err error) {
+	// open the file in read-only mode and set the permission to 0644 (read and write for the current user and read-only for everyone else)
+	file, err = os.OpenFile(name, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	fi, err := file.Stat()
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return file, fi.Size(), nil
+}
