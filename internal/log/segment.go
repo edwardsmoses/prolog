@@ -53,7 +53,6 @@ func newSegment(dir string, baseOffset uint64, c Config) (*segment, error) {
 
 func (s *segment) Append(record *api.Record) (offset uint64, err error) {
 	cur := s.nextOffset
-	fmt.Print("cur: ", cur, "\n")
 	record.Offset = cur
 
 	p, err := proto.Marshal(record)
@@ -74,6 +73,5 @@ func (s *segment) Append(record *api.Record) (offset uint64, err error) {
 	}
 
 	s.nextOffset++
-	fmt.Print("what is cur now: ", cur, "\n")
 	return cur, nil
 }
