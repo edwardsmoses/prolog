@@ -1,7 +1,6 @@
 package log
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"testing"
@@ -34,15 +33,12 @@ func TestSegment(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 16+i, off)
 
-		fmt.Println("is there err when apedning", err, s.IsMaxed(), s.store.size, c.Segment)
-
 		got, err := s.Read(off)
 		require.NoError(t, err)
 		require.Equal(t, want.Value, got.Value)
 	}
 
 	_, err = s.Append(want)
-	fmt.Println("error when apedning", err, s.IsMaxed(), s.store.size, c.Segment)
 	require.Equal(t, io.EOF, err)
 
 	//maxed index

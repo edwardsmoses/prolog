@@ -1,7 +1,6 @@
 package log
 
 import (
-	"fmt"
 	"io"
 	"os"
 
@@ -89,9 +88,6 @@ func (i *index) Read(in int64) (out uint32, pos uint64, err error) {
 }
 
 func (i *index) Write(off uint32, pos uint64) error {
-
-	//we're here maybe?
-	fmt.Println("index.go: Write()", len(i.mmap), i.size, entWidth, "result: ", uint64(len(i.mmap)) < i.size+entWidth)
 
 	// check if the mmap is large enough to hold the entry
 	if uint64(len(i.mmap)) < i.size+entWidth {
