@@ -50,3 +50,30 @@ func newSegment(dir string, baseOffset uint64, c Config) (*segment, error) {
 
 	return s, nil
 }
+
+func (s *segment) Append(record *api.Record) (offset uint64, err error) {
+	cur := s.nextOffset
+	fmt.Print("cur: ", cur, "\n")
+	record.Offset = cur
+
+	p, err := proto.Marshal(record)
+	if err != nil {
+		return 0, err
+	}
+
+	_, pos, err := s.store.Append(p)
+	if err != nil {
+		return 0, err
+	}
+
+	if err = s.index.Write(
+		// the offset is the current offset minus the base offset (relative to the base offset)
+		uint32(s.nextOffset-uint64(s.baseOffset)),
+		pos); err != nil {
+		return 0, err
+	}
+
+	s.nextOffset++
+	fmt.Print("what is cur now: ", cur, "\n")
+	return cur, nil
+}
