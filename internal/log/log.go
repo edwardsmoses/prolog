@@ -174,8 +174,8 @@ func (l *Log) Truncate(lowest uint64) error {
 }
 
 func (l *Log) Reader() io.Reader {
-	l.m.RLock()
-	defer l.m.RUnlock()
+	l.mu.RLock()
+	defer l.mu.RUnlock()
 
 	readers := make([]io.Reader, len(l.segments))
 	for i, s := range l.segments {
